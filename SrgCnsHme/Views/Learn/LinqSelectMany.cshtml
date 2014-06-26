@@ -1,0 +1,50 @@
+﻿@{
+  ViewBag.Title = "LinqSelectMany";
+}
+
+<h2>LinqSelectMany</h2>
+
+@*<a href="http://bit.ly/164Siri">Reference Information</a>
+
+@functions{
+
+  class PetOwner
+  {
+    public string Name { get; set; }
+    public List<String> Pets { get; set; }
+  }
+
+}
+
+@{
+  var nw = new NorthwindContext();
+
+  PetOwner[] petOwners = 
+                    { new PetOwner { Name="Higa, Sidney", 
+                          Pets = new List<string>{ "Scruffy", "Sam" } },
+                      new PetOwner { Name="Ashkenazi, Ronen", 
+                          Pets = new List<string>{ "Walker", "Sugar" } },
+                      new PetOwner { Name="Price, Vernette", 
+                          Pets = new List<string>{ "Scratches", "Diesel" } },
+                      new PetOwner { Name="Hines, Patrick", 
+                          Pets = new List<string>{ "Dusty" } }};
+
+  petOwners.Select(owner => owner.Pets).Dump("using Select()");
+
+  petOwners.SelectMany(owner => owner.Pets).Dump("using SelectMany()");
+
+  // For each PetOwner element in the source array, project a sequence of strings where each string 
+  // consists of the index of the PetOwner element in the source array and the name of each pet in PetOwner.Pets.
+  petOwners.SelectMany((owner, index) => owner.Pets.Select(pet => index + ":" + pet + " --> " + owner.Name)).Dump("owner index : pet name");
+
+  // Create a sequence of ALL the Pet objects. Then project an anonymous type that consists of each 
+  // Pet in the new sequence and the PetOwner object from the initial array that corresponds to that pet.
+  petOwners.SelectMany(owner => owner.Pets, (owner, pet) => new {owner, pet})
+
+  //Project an anonymous type that consists of the pet owner's name and the pet's name. 
+  .Select(ownerAndPet => new {Owner = ownerAndPet.owner.Name, Pet = ownerAndPet.pet})
+  .Dump();
+}
+
+
+@("".Dumpx()) *@

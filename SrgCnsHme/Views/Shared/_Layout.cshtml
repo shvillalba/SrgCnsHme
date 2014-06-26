@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>@ViewBag.Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  @Styles.Render("~/Content/css")
+  @Styles.Render("~/content/bootstrap")
+   @* @Styles.Render("~/Content/jQueryUi") *@ 
+  @Scripts.Render("~/bundles/modernizr")
+  @RenderSection("head", false)
+  @Html.Partial("_html5shiv")
+  @* favicons and touch icons go here *@
+  <link rel="shortcut icon" href="~/Content/images/3-thing.ico" type="image/x-icon"/>
+</head>
+<body>
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        @Html.ActionLink("S & C Home", "Index", "Home", null, new { @class = "brand" })
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+            <li>@Html.ActionLink("Charts", "Index", "Weights")</li>
+            <li>@Html.ActionLink("Speed Dials", "Index", "SpeedDialSites")</li>
+            <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+            <li>@Html.ActionLink("Maintenance", "Index", "Maintenance")</li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Learn<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li class="nav-header">Experimantal</li>
+                <li>@Html.ActionLink("1: Carmen libretto", "CarmenLibretto", "Learn")</li>
+                <li class="nav-header">Knockout Tutorials</li>
+                <li>@Html.ActionLink("1: Intro", "KnockoutTraining1", "Learn")</li>
+                <li>@Html.ActionLink("2: Lists & Collections", "KnockoutTraining2", "Learn")</li>
+                <li>@Html.ActionLink("3: Single page applications", "KnockoutTraining3", "Learn", new { folder = "mail" }, null)</li>
+                <li>@Html.ActionLink("4: Creating custom bindings", "KnockoutTraining4", "Learn")</li>
+                <li>@Html.ActionLink("5: Loading and saving data", "KnockoutTraining5", "Learn")</li>
+                <li class="divider"></li>
+                <li>@Html.ActionLink("Chart Sample", "ChartSample", "Learn")</li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li class="nav-header">SHV tests</li>
+                <li>@Html.ActionLink("Persons (local db)", "Index", "LocalTestDbPersons")</li>
+                <li>@Html.ActionLink("SelectMany (linq)", "LinqSelectMany", "Learn")</li>
+                @*	<li><a href="#">Another action</a></li>
+								<li><a href="#">Something else here</a></li>*@
+                <li class="divider"></li>
+                <li class="nav-header">Bootstrap Samples</li>
+                <li>@Html.ActionLink("Fluid Layout", "Fluid", "ExampleLayouts")</li>
+                <li>@Html.ActionLink("Marketing Layout", "Marketing", "ExampleLayouts")</li>
+                <li>@Html.ActionLink("Narrow Layout", "Narrow", "ExampleLayouts")</li>
+                <li>@Html.ActionLink("Signin Layout", "SignIn", "ExampleLayouts")</li>
+                <li>@Html.ActionLink("Starter Layout", "Starter", "ExampleLayouts")</li>
+                <li>@Html.ActionLink("Sticky Footer Layout", "StickyFooter", "ExampleLayouts")</li>
+                <li>@Html.ActionLink("Carousel Layout", "Carousel", "ExampleLayouts")</li>
+                @*<li><a href="#">One more separated link</a></li>*@
+              </ul>
+            </li> 
+            <li>@Html.ActionLink("About", "About", "Home")</li>
+          </ul>
+          <div class="navbar-form pull-right">@Html.Partial("_LoginPartial")</div>
+        </div>
+        <!--/.nav-collapse -->
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    @Html.Partial("_alerts")
+    @Html.Partial("_validationSummary")
+    @RenderBody()
+    <hr>
+    <footer>
+      <p>&copy; S & C, @System.DateTime.Now.ToString("yyyy") <img src="~/Content/images/3-thing.ico" width="20" height="20"/></p>
+    </footer>
+  </div> 
+  @Scripts.Render("~/bundles/jsSupport")
+  @Scripts.Render("~/jquery")
+  @Scripts.Render("~/jquery-migrate")
+  @Scripts.Render("~/js")
+  @Scripts.Render("~/scripts/bootstrap") 
+ @* @Scripts.Render("~/bundles/jQueryUi")*@
+  @Scripts.Render("~/scripts/sergio")
+  @RenderSection("Scripts", required: false)
+</body>
+</html>
+

@@ -1,0 +1,117 @@
+﻿@using SrgCnsHme.Views.Helpers
+
+@{
+  ViewBag.Title = "Weight Chart";
+}
+
+@section head{
+  @scHelpers.LocalCss("Weights", "WeightChart.css", Url)
+}
+
+<h2>Weight Chart</h2>
+
+<div class="text-center">
+  <p>
+    <img src="#" data-bind="attr: { src: getWeightChart }" alt="S & C Weight Record" />
+  </p>
+</div>
+
+<div class="accordion" id="accordion2">
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Chart Controls</a>
+    </div>
+    <div id="collapseOne" class="collapse">
+      <div class="accordion-inner">
+        <span class="chrtCtrlLabel">Sergio</span>
+        <input class="middle" type="radio" name="personSelectionRadios" value="Sergio" data-bind="click: refreshChart" />
+        <span class="chrtCtrlLabel">Consuelo</span>
+        <input class="middle" type="radio" name="personSelectionRadios" value="Consuelo" data-bind="click: refreshChart" />
+        <span class="chrtCtrlLabel">Both</span>
+        <input class="middle" type="radio" name="personSelectionRadios" value="both" data-bind="click: refreshChart" checked="checked" />
+        <span class="chrtCtrlLabel">From:</span>
+        <input id="dateFrom" class="datepicker middle span2 wdth90" type="text" data-bind="value: fromDate" value="@ViewBag.DefaultFromDate">
+        <span class="chrtCtrlLabel">To:</span>
+        <input id="dateTo" class="datepicker middle span2 wdth90" type="text" data-bind="value: toDate"   value="@ViewBag.DefaultToDate">
+        <span class="chrtCtrlLabel">
+          <button id="refreshChartBtn" class="middle btn btn-primary btn-mini" data-bind="click: refreshChart">Refresh Chart</button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-center" data-bind="visible: weightsChanged">
+  <a class="btn btn-primary btn-mini" data-bind="click: submitWeightChanges"><i class="icon-thumbs-up"></i>Submit Weight Changes</a>
+  <a class="btn btn-danger btn-mini" data-bind="click: clearWeightChanges"><i class="icon-thumbs-up"></i>Cancel Weight Changes</a> 
+</div>
+<h6 id="opStatus" class="text-center"></h6>
+<div class="text-center">
+  <div class="airtight">
+    <div>
+      Sergio's
+      <div class="table-bordered">
+        <button class="btn btn-primary btn-micro" data-bind="enable: newSrgWeightIsValid, click: function () { addNewWeight('Sergio'); }"><strong>+</strong></button>
+        <input id="newSrgDt" type="text" class="datepicker middle span2 wdth90" readonly="readonly" data-bind="value: newSrgDate" />
+        <input id="newSrgWt" type="text" class="middle span2 wdth90" placeholder="enter weight" data-bind="value: newSrgWeight, event: { keyup: checkSrgWeightVal }" />
+      </div>
+      <div class="table-bordered">
+        <table class="table table-striped table-bordered table-condensed table-hover">
+          <tr>
+            <th>Date</th>
+            <th>Weight</th>
+          </tr>
+          <tbody data-bind="foreach: srgWeights">
+            <tr data-toggle="context" data-target="#edit-menu"
+              data-bind="event: { keyup: $parent.keyUp, dblclick: $parent.dblClick, click: $parent.selectRow, contextmenu: $parent.selectRow }, css: { selectedRow: amCurRow }"
+              data-iterator="knockoutarray">
+              @koHelpers.KoTextTd("date", "", "readonly='readonly'")
+              @koHelpers.KoTextTd("weight")
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="gap20"></div>
+    <div>
+      Consuelo's 
+      <div class="table-bordered">
+        <button class="btn btn-primary btn-micro" data-bind="enable: newCslWeightIsValid, click: function () { addNewWeight('Consuelo'); }"><strong>+</strong></button>
+        <input id="newCslDt" type="text" class="datepicker middle span2 wdth90" readonly="readonly" data-bind="value: newCslDate" />
+        <input id="newCslWt" type="text" class="middle span2 wdth90" placeholder="enter weight" data-bind="value: newCslWeight, event: { keyup: checkCslWeightVal }" />
+      </div>
+      <div class="table-bordered">
+        <table class="table table-striped table-bordered table-condensed table-hover">
+          <tr>
+            <th>Date</th>
+            <th>Weight</th>
+          </tr>
+          <tbody data-bind="foreach: cslWeights">
+            <tr data-toggle="context" data-target="#edit-menu"
+              data-bind="event: { keyup: $parent.keyUp, dblclick: $parent.dblClick, click: $parent.selectRow, contextmenu: $parent.selectRow }, css: { selectedRow: amCurRow }"
+              data-iterator="knockoutarray">
+              @koHelpers.KoTextTd("date", "", "readonly='readonly'")
+              @koHelpers.KoTextTd("weight")
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="edit-menu">
+  <ul class="dropdown-menu" role="menu">
+    <li><a tabindex="1" href="#" data-bind="visible: wpm.curRowCanEditDel(), click: wpm.beginEdit"><i class="icon-pencil"></i>Edit</a></li>
+    <li><a tabindex="2" href="#" data-bind="visible: wpm.curRowCanEditDel(), click: wpm.delWeight"><i class="icon-trash"></i>Delete</a></li>
+    <li><a tabindex="3" href="#" data-bind="visible: wpm.curRowMarkedForDeletion(), click: wpm.unDelWeight"><i class="icon-external-link"></i>Un-Delete</a></li>
+    <li><a tabindex="4" href="#" data-bind="visible: wpm.curRowInEditMode(), click: wpm.okEdit"><i class="icon-ok"></i>OK</a></li>
+    <li><a tabindex="5" href="#" data-bind="visible: wpm.curRowInEditMode(), click: wpm.cancelEdit"><i class="icon-trash"></i>Cancel this edit</a></li>
+    <li><a tabindex="6" href="#" data-bind="visible: wpm.curRowInEditMode(), click: wpm.restoreOriginal"><i class="icon-repeat"></i>Restore original value</a></li>
+  </ul>
+</div>
+
+
+@section Scripts
+{
+  <script src="~/Scripts/Weights/WeightChart.js"></script>
+}

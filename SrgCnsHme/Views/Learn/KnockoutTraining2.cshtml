@@ -1,0 +1,87 @@
+﻿@{
+  ViewBag.Title = "Knockout Training 2: Working with Lists and Collections";
+}
+@Styles.Render("~/Content/learning")
+<h2>Knockout Training 2: Working with Lists and Collections</h2>
+<hr />
+<h2>Your seat reservations (<span data-bind="text: seats().length"></span>)</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Passenger name</th>
+      <th>Meal</th>
+      <th>Surcharge</th>
+      <th></th>
+    </tr>
+  </thead>
+  <!-- Todo: Generate table body -->
+  <tbody data-bind="foreach: seats">
+    <tr>
+      <!-- Note: each iteration uses, as model, a  "SeatReservation" .. which is the model for a "seat" -->
+      <td>
+        <input data-bind="value: name" /></td>
+      <td>
+        <select data-bind="options: $root.availableMeals, value: meal, optionsText: 'mealName'"></select></td>
+      <!-- $root accesses the "top/page's" model  -->
+      <td data-bind="text: formattedPrice"></td>
+      <td><a href="#" data-bind="click: $root.removeSeat">Remove</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<button data-bind="click: addSeat, enable: seats().length < 5">Reserve another seat</button>
+<!-- Note: how to disable the button when more than 4 seats. -->
+<h3 data-bind="visible: totalSurcharge() > 0">
+  <!-- Note: neat trick to hide this if there is no charge. -->
+  Total surcharge: $<span data-bind="text: totalSurcharge().toFixed(2)"></span>
+</h3>
+
+
+@section Scripts {
+   @Scripts.Render("~/jsLearn") 
+
+  <script type="text/javascript">
+    // Class to represent a row in the seat reservations grid
+    function SeatReservation(name, initialMeal) {
+      var me = this;
+      me.name = name;
+      me.meal = ko.observable(initialMeal);
+
+      me.formattedPrice = ko.computed(function () {
+        var price = me.meal().price;
+        return price ? "$" + price.toFixed(2) : "None";
+      });
+    }
+
+    // Overall viewmodel for this screen, along with initial state
+    function AppViewModel() {
+      var me = this;
+
+      // Non-editable catalog data - would come from the server
+      me.availableMeals = [
+          { mealName: "Standard (sandwich)", price: 0 },
+          { mealName: "Premium (lobster)", price: 34.95 },
+          { mealName: "Ultimate (whole zebra)", price: 290 }
+      ];
+
+      // Editable data
+      me.seats = ko.observableArray([
+          new SeatReservation("Steve", me.availableMeals[0]),
+          new SeatReservation("Bert", me.availableMeals[0])
+      ]);
+
+      // Operations
+      me.addSeat = function () { me.seats.push(new SeatReservation("", me.availableMeals[0])); };
+      me.removeSeat = function (seat) { me.seats.remove(seat); };
+      me.totalSurcharge = ko.computed(function () {
+        var total = 0;
+        for (var i = 0; i < me.seats().length; i++)
+          total += me.seats()[i].meal().price;
+        return total;
+      });
+    }
+
+    ko.applyBindings(new window.AppViewModel());
+  </script>
+}

@@ -1,0 +1,12 @@
+﻿@* Generator: MvcHelper *@
+
+@helper KoTextTd(string name, string extraClasses = "", string extraAttributes = "")
+{
+  <td class="pointerCursor"
+      data-bind="visible:!inEditMode(), text: @name  ,  css: {markedForDeletion: markedForDeletion}" ></td>
+  <td data-bind="visible: inEditMode()">
+    <input type="text" 
+      class="editCursor middle span2 wdth90 @extraClasses" @extraAttributes 
+      data-bind="value: @name" />
+  </td>
+}

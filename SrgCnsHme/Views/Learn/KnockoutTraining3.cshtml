@@ -1,0 +1,111 @@
+﻿@{
+  ViewBag.Title = "Knockout Training 3: Single page applications";
+}
+@Styles.Render("~/Content/learning")
+
+<h2>Knockout Training 3: Single page applications</h2>
+
+<!-- Folders -->
+<ul class="folders" data-bind="foreach: folders">
+  <!-- "below: $data" stands for the text-value seen in each "foreach" iteration (an <li>) within the <ul>: "Inbox", "Archive", etc. -->
+  <li data-bind="text: $data, 
+                 css: { selected: $data == $root.chosenFolderId() },
+                 click: $root.goToFolder"></li>
+</ul>
+<!-- Mails grid -->
+<table class="mails" data-bind="with: chosenFolderData">
+  <thead>
+    <tr>
+      <th>From</th>
+      <th>To</th>
+      <th>Subject</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody data-bind="foreach: mails">
+    <tr data-bind="click: $root.goToMail">
+      <td data-bind="text: from"></td>
+      <td data-bind="text: to"></td>
+      <td data-bind="text: subject"></td>
+      <td data-bind="text: date"></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Chosen mail -->
+<div class="viewMail" data-bind="with: chosenMailData">
+  <div class="mailInfo">
+    <h1 data-bind="text: subject"></h1>
+    <p>
+      <label>From</label>: <span data-bind="text: from"></span>
+    </p>
+    <p>
+      <label>To</label>: <span data-bind="text: to"></span>
+    </p>
+    <p>
+      <label>Date</label>: <span data-bind="text: date"></span>
+    </p>
+  </div>
+  <p class="message" data-bind="html: messageContent" />
+</div>
+
+@section Scripts {
+  @Scripts.Render("~/jsLearn")
+  <script type="text/javascript">
+
+    function AppViewModel() {
+      var self = this;
+      self.folders = ['Inbox', 'Archive', 'Sent', 'Spam'];
+      self.chosenFolderId = ko.observable();
+      self.chosenFolderData = ko.observable();
+      self.chosenMailData = ko.observable();
+
+      // Behaviors
+      self.goToFolder = function (folder) { location.hash = folder; };
+      self.goToMail = function (mail) { location.hash = mail.folder + '/' + mail.id; };
+
+      // Client-side routes    
+      Sammy(function () {
+        this.get('#:folder', function () {
+          self.chosenFolderId(this.params.folder);
+          self.chosenMailData(null);
+          $.get("http://learn.knockoutjs.com/mail", { folder: this.params.folder }, function (res) { self.chosenFolderData(resObj(res)); });
+        });
+
+        this.get('#:folder/:mailId', function () {
+          self.chosenFolderId(this.params.folder);
+          self.chosenFolderData(null);
+          $.get("http://learn.knockoutjs.com/mail", { mailId: this.params.mailId }, function (res) { self.chosenMailData(resObj(res)); });
+        });
+
+        this.get('mail', function () { this.app.runRoute('get', '#Inbox'); });  //LEARN: don't use "" to mean "use defaults". Use something like this ("mail"). Otherwise sammy will intercept other links in site and keep you in this page.
+
+      }).run();
+    };
+
+    ko.applyBindings(new window.AppViewModel());
+  </script>
+}
+
+@*Information follows*@
+<script type="text/javascript">
+  /*
+  // For reference: this is the way the "res" variable--returned by the $.get(...) call, above--looks, if "printed out".
+  // We're using the jquery.xdomainajax.js plugin here, in Scripts folder, to make this cross-domain ajax call. It uses YQL (Yahoo Query Language), and thus
+  // the format of the returned data is different than it would've been in normal Ajax. If, for example, I use "JSON.stringify(...)" on the returned data
+  // (in the learn.knockoutjs.com website tutorial (named: "Single page applications"), then--there--the data consists of ONLY the json object contained within
+  // the <p> tags below. Using YQL wraps this object with full html-page tags. The code above, then simply uses jQuery to extract the json string and instantiate
+  // this string into a json object.
+  // 
+  var res = {"responseText":
+"<html>
+  <head>
+    <meta content="HTML Tidy for Java (vers. 26 Sep 2004), see www.w3.org" name="generator"/>
+    <title/>
+  </head>
+  <body>
+    <p>{"id":"Inbox","mails":[{"id":1,"from":"Abbot \u003coliver@smoke-stage.xyz\u003e","to":"steve@example.com","date":"May 25, 2011","subject":"Booking confirmation #389629244","folder":"Inbox"},{"id":2,"from":"Addison Begoat \u003cupton.oprdrusson@pear-income.xyz\u003e","to":"steve@example.com","date":"May 7, 2011","subject":"FW: Associate advice","folder":"Inbox"},{"id":3,"from":"Allistair \u003cleroy72@plane-railway.xyz\u003e","to":"steve@example.com","date":"May 19, 2011","subject":"RE: Phone call tomorrow 5 o\u0027clock","folder":"Inbox"},{"id":4,"from":"emmanuel26@ghost.xyz","to":"steve@example.com","date":"May 22, 2011","subject":"Completing basketball project","folder":"Inbox"},{"id":5,"from":"jamalia.alnismith1@twigdad.xyz","to":"steve@example.com","date":"Apr 26, 2011","subject":"FW: Can you get DE to resubmit accounts?","folder":"Inbox"},{"id":6,"from":"lionel.qugy@cribsmoke.xyz","to":"steve@example.com","date":"May 22, 2011","subject":"RE: Catch up at 9:00 to finalise rain spec","folder":"Inbox"},{"id":7,"from":"Madison Lalinesson \u003cmelinda.gofagy@wing-language2.xyz\u003e","to":"steve@example.com","date":"May 19, 2011","subject":"RE: Pencil scenarios","folder":"Inbox"},{"id":8,"from":"rajah.nukripyford@cast92.xyz","to":"steve@example.com","date":"Apr 28, 2011","subject":"Flavor benefit gig","folder":"Inbox"},{"id":9,"from":"Sandra Juanhison \u003cyoshi.mostaline72@facefruit.xyz\u003e","to":"steve@example.com","date":"May 8, 2011","subject":"RE: Apparel5 network is back up","folder":"Inbox"},{"id":10,"from":"Sylvester \u003crose.va@bunpig98.xyz\u003e","to":"steve@example.com","date":"May 1, 2011","subject":"Feedback requested by Ayanna Nuyo","folder":"Inbox"},{"id":11,"from":"veronica@heart.xyz","to":"steve@example.com","date":"May 4, 2011","subject":"Project Book starting 6pm","folder":"Inbox"},{"id":12,"from":"XLN \u003cbasia@framehome.xyz\u003e","to":"steve@example.com","date":"May 8, 2011","subject":"RE: Remember Whoopi\u0027s joke","folder":"Inbox"}]}</p>
+  </body>
+</html>"};
+*/
+</script>

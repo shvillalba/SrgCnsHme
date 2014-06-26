@@ -1,0 +1,92 @@
+﻿@model IEnumerable<SrgCnsHme.Models.SpeedDialSite>
+
+@{
+  ViewBag.Title = "Speed Dials";
+}
+
+<h2>Speed Dials</h2>
+
+<p>
+  @Html.ActionLink("Create New", "Create")
+</p>
+@*<table>
+  <tr>
+    <th>
+      @Html.DisplayNameFor(model => model.name)
+    </th>
+    <th>
+      @Html.DisplayNameFor(model => model.url)
+    </th>
+    <th>
+      @Html.DisplayNameFor(model => model.iconurl)
+    </th>
+    <th>
+      @Html.DisplayNameFor(model => model.order)
+    </th>
+    <th></th>
+  </tr>
+
+  @foreach (var item in Model)
+  {
+    <tr>
+      <td>
+        @Html.DisplayFor(modelItem => item.name)
+      </td>
+      <td>
+        @Html.DisplayFor(modelItem => item.url)
+      </td>
+      <td>
+        <div class="sppedDialthumbnail">
+          @Html.Img(item.iconurl, item.name) 
+        </div>
+      </td>
+      <td>
+        @Html.DisplayFor(modelItem => item.order)
+      </td>
+      <td>
+        @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
+        @Html.ActionLink("Details", "Details", new { id = item.id }) |
+        @Html.ActionLink("Delete", "Delete", new { id = item.id })
+      </td>
+    </tr>
+  }
+
+</table>*@
+
+<div class="OpsDiv">
+  @foreach (var item in Model)
+  {
+    <div class="speedDialthumbnail" data-draggable="true" data-toggle="context" data-target="#edit-menu"
+      data-iterator="knockoutarray" data-load="@item.id"> @*data-load is passed to context menu when clicked*@
+      <a href="@item.url" title="@item.name">
+        <span>@item.name</span>
+        <img class="speedDialthumbnail" src="@item.iconurl" alt="@item.name" draggable="true">  
+      </a>
+    </div>
+  }
+</div>
+
+<div id="edit-menu">
+  <ul class="dropdown-menu" role="menu">
+    <li><span data-bind="click: viewModel.beginEdit"><i class="icon-pencil"></i>Edit</span></li>
+  </ul>
+</div>
+
+@section Scripts{
+  <script type="text/javascript">
+
+    function KoViewModel() {
+      var me = this;
+
+      me.beginEdit = function (d, e) {
+        var a = e.target;
+        var id = $(a).closest(".dropdown-menu").attr("data-load");
+        window.location = "@Url.Action("Edit")" + "/" + id;
+      };
+    }
+
+    var viewModel = new KoViewModel();
+    ko.applyBindings(viewModel);
+
+  </script>
+}

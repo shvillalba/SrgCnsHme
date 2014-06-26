@@ -1,0 +1,152 @@
+﻿/* -------------- SHV ----------------------------------------------*/
+div.OpsDiv
+{
+  margin: 10px;
+  text-align: center;
+  border: thin solid green;
+  border-width: 1px;
+  background-color: #b6b7bc;
+  padding-bottom: 20px;
+  display: inline-block;
+}
+
+  div.OpsDiv .accordion a, div.OpsDiv .ui-accordion-content, /* body of accordion when extended */
+  div.OpsDiv table tr:nth-child(2n+2), /* alternating rows of tables */
+  .ui-datepicker-calendar td:not(.ui-datepicker-today) a.ui-state-default, .ui-timepicker .ui-timepicker-minute-cell a, .ui-timepicker .ui-timepicker-hour-cell a
+  {
+    background: #dbdbda;
+  }
+
+div.speedDialthumbnail
+{
+  background-color: inherit;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  text-align: center;
+  display: inline-block;
+  margin: 4px 4px 10px 4px;
+  width: 80px;
+  height: 80px;
+}
+
+img.speedDialthumbnail
+{
+  box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+  display: block;
+  margin: auto;
+  border: 8px;
+  width: 100%;
+  height: 90%;
+  border-radius: 8px;
+}
+
+.boxsizingBorder
+{
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.markedForDeletion
+{
+  color: gray;
+  text-decoration: line-through;
+}
+
+.btn-shvConnString
+{
+  width: 50px;
+  height: 18px;
+}
+
+.datepicker[readonly]
+{
+  cursor: not-allowed;
+}
+
+.dropdown-menu > li > a, .dropdown-menu > li > span
+{
+  text-align: left;
+  padding-left: 10px;
+}
+
+.selectedRow
+{
+  color: #ffffff;
+  background-color: #0081c2;
+}
+
+.table-striped tbody > tr:nth-child(2n+1).selectedRow > td
+{
+  color: #ffffff;
+  background-color: #0081c2;
+}
+
+.pointerCursor
+{
+  cursor: pointer;
+}
+
+.editCursor
+{
+  cursor: text;
+}
+
+.table-hover tbody tr.selectedRow:hover > td,
+.table-hover tbody tr:hover > th {
+  background-color: #0081c2;
+}
+
+ul.dropdown-menu {
+  min-width: 90px;
+}
+
+.dropdown-menu li {
+  text-align: left;
+}
+
+
+.dropdown-menu > li > span {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 20px;
+  color: #333333;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.dropdown-menu > li > span:hover,
+.dropdown-menu > li > span:focus,
+.dropdown-submenu:hover > span,
+.dropdown-submenu:focus > span {
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #0081c2;
+  background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
+  background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
+  background-image: -o-linear-gradient(top, #0088cc, #0077b3);
+  background-image: linear-gradient(to bottom, #0088cc, #0077b3);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
+  cursor: pointer;
+}
+
+div.airtight
+{
+  display: inline-block;
+  background-color: ghostwhite;
+  border: solid gainsboro 1px;
+}
+
+  div.airtight > div
+  {
+    float: left;
+    padding: 2px;
+    text-align: center;
+    margin: 2px;
+  }

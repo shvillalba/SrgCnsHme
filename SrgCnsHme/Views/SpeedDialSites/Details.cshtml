@@ -1,0 +1,43 @@
+﻿@model SrgCnsHme.Models.SpeedDialSite
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>SpeedDialSite</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.url)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.url)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.iconurl)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.iconurl)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.order)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.order)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,7 @@
+﻿@* Generator: MvcHelper *@
+
+@helper LocalCss(string controller, string name, UrlHelper url)
+{
+  <link href="@url.Content("~/Content/" + controller + "/" + name)"   
+  rel="stylesheet" type="text/css" />
+}

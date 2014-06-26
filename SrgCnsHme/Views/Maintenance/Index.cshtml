@@ -1,0 +1,249 @@
+﻿@{
+  ViewBag.Title = "Maintenance";
+}
+
+<h2>Maintenance</h2>
+<div>
+  <a href="https://appharbor.com/applications/srgcnshme">Go to SrgCnsHme site at AppHarbor</a>
+</div>
+<div class="container-narrow">
+  <fieldset>
+    <legend>Custom Errors <i>Mode</i> is currently set to: <strong id="current_custom_errors_mode"></strong></legend>
+    Change <i>Mode</i> to: ...<br />
+    <input type="radio" name="CustomErrorsModes" value="On" data-bind="click: changeCustomErrorsMode" />
+    On<br />
+    <input type="radio" name="CustomErrorsModes" value="Off" data-bind="click: changeCustomErrorsMode" />
+    Off<br />
+    <input type="radio" name="CustomErrorsModes" value="RemoteOnly" data-bind="click: changeCustomErrorsMode" />
+    RemoteOnly 
+  </fieldset>
+</div>
+<hr />
+<div>
+  <h4 id="response_msg"></h4>
+</div>
+<div>
+  <h4 data-bind="text:opStatusMsg"></h4>
+</div>
+<div>
+  @Ajax.ActionLink("Connection Strings are in clear text. Click here to encrypt them", "EncryptConnectionStrings", "Maintenance", null, new AjaxOptions
+  {
+    HttpMethod = "get",
+    OnSuccess = "gotRespMsg"
+  }, new { @data_bind = "visible: csAreEncrypted() == false" })
+</div>
+
+<div>
+  @Ajax.ActionLink("Connection Strings are encrypted. Click here to decrypt them", "DecryptConnectionStrings", "Maintenance", null, new AjaxOptions
+    {
+      HttpMethod = "get",
+      OnSuccess = "gotRespMsg"
+    }, new { @data_bind = "visible: csAreEncrypted() == true" })
+</div>
+
+<div class="text-center">
+  <button class="btn btn-info" data-bind="click: refreshConnStringInfo">Refresh Connection String Info:</button>
+</div>
+<br />
+<div>
+  <div id="conn_string_info_status" data-bind="text: connStringInfoStatus" class="text-center"></div>
+  <table class="table table-striped table-bordered table-condensed table-hover">
+    <tr>
+      <th>Name</th>
+      <th>Conn String</th>
+      <th>Provider</th>
+      <th></th>
+    </tr>
+    <tbody data-bind="foreach: connStrings">
+      <tr>
+        <td data-bind="visible:!inEditMode(), text: name,  css: {markedForDeletion: markedForDeletion()}"></td>
+        <td data-bind="visible: inEditMode()">
+          <input type="text" data-bind="value: _name" placeholder="... edit name here" /></td>
+        <td data-bind="visible:!inEditMode(), text: connString,  css: {markedForDeletion: markedForDeletion()}"></td>
+        <td data-bind="visible: inEditMode()">
+          <textarea class="boxsizingBorder" data-bind="value: _connString" placeholder=" ... edit connection string here." style="height: 30px;"></textarea></td>
+        <td data-bind="visible:!inEditMode(), text: provider,  css: {markedForDeletion: markedForDeletion()}"></td>
+        <td data-bind="visible: inEditMode()">@Html.DropDownList("providerName", new SelectList(ViewBag.providers), new { @class = "dropdown", @data_bind = "value: _provider" })</td>
+        <td>
+          <button class="btn btn-mini btn-warning btn-shvConnString" data-bind="click: $parent.removeConnString, visible: !inEditMode() && !markedForDeletion()">Delete</button>
+          <button class="btn btn-mini btn-primary btn-shvConnString" data-bind="click: $parent.unDeleteConnString, visible: !inEditMode() && markedForDeletion()">Un-Delete</button>
+          <button class="btn btn-mini btn-warning btn-shvConnString" data-bind="click: $parent.editConnString, visible:!inEditMode() && !markedForDeletion()">Edit</button>
+          <button class="btn btn-mini btn-success btn-shvConnString" data-bind="click: $parent.editConnStringOk, visible:inEditMode()">OK</button>
+          <br />
+          <button class="btn btn-mini btn-warning btn-shvConnString" data-bind="click: $parent.editConnStringCancel, visible:inEditMode()">Cancel</button>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>
+          <input type="text" data-bind="value: newConnStringName" placeholder="... new string name" /></td>
+        <td>
+          <textarea class="boxsizingBorder" data-bind="value: newConnString" placeholder=" ... new connection string here." style="height: 30px;"></textarea></td>
+        <td>@Html.DropDownList("providerName", new SelectList(ViewBag.providers), new { @class = "dropdown", @data_bind = "value: newConnStringProvider" })</td>
+        <td>
+          <button class="btn btn-mini btn-primary btn-shvConnString" data-bind="click: addConnString">Add</button></td>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="text-center">
+    <span data-bind="visible: connStringsChanged"><button class="btn btn-primary" data-bind="click: submitConnStringChanges">Submit Connection-String changes</button>
+    Update db-Init Tbl: <input type="checkbox" data-bind="checked: updateInitTbl" /></span>
+  </div>
+</div>
+
+@*<textarea data-bind="value: ko.toJSON(connStrings)"></textarea>*@
+
+@section Scripts {
+  @* @Scripts.Render("~/jsLearn")*@
+  <script type="text/javascript">
+    function gotRespMsg(res) {
+      $("#response_msg").text(res.status);
+      viewModel.csAreEncrypted(res.areEncrypted);
+    }
+
+    //-----------------------------------------------------------
+    function ConnString(data) {
+      this.isNew = ko.observable(data.isNew);
+      this.name = ko.observable(data.name);
+      this.connString = ko.observable(data.connString);
+      this.provider = ko.observable(data.provider);
+      this.markedForDeletion = ko.observable(false);
+
+      // used during editing:
+      this._name = ko.observable();
+      this._connString = ko.observable();
+      this._provider = ko.observable();
+      this.inEditMode = ko.observable(false);
+
+      // original values (used to detect changes during edits, etc) They don't change, so they're not "observable".
+      this._nameOr = data.name;
+      this._connStringOr = data.connString;
+      this._providerOr = data.provider;
+    }
+
+    function MaintenanceModel() {
+      var me = this;
+
+      $('input:radio[name="CustomErrorsModes"][value="@ViewBag.customErrorsMode"]').prop('checked', true);
+      $("#current_custom_errors_mode").text("@ViewBag.customErrorsMode");
+
+      me.changeCustomErrorsMode = function (data, event) {
+        var radio = $(event.target);
+        var newMode = radio.val();
+        $.ajax("@Url.Action("ChangeCustomErrorsMode")", {
+          dataType: "json",
+          data: { newMode: newMode },
+          type: "POST",
+          success: function (res) {
+            if (res.status == "Success")
+              $("#current_custom_errors_mode").text(res.currentMode);
+            else
+              alert("Error attempting to change the custom errors mode!!");
+          }
+        });
+        return true; //LEARN: otherwise, by default, knockout disables default behavior (actually "checking" the radio-btn)
+      };
+
+      var cs = eval('@ViewBag.connStrings'.replace(/\\/g, "\\\\"));  //LEARN: to replace "\" with "\\", so they become "escaped" and displayed as "\".
+      me.connStrings = ko.observableArray($.map(cs, function (str) { return new ConnString(str);}));
+      me.opStatusMsg = ko.observable("");
+      me.connStringInfoStatus = ko.observable("");
+      me.newConnStringName = ko.observable();
+      me.newConnString = ko.observable();
+      me.newConnStringProvider = ko.observable();
+      me.connStringsChanged = ko.computed(function () {
+        var changeDetected = false;
+        $.each(me.connStrings(), function (idx, str) {
+          changeDetected = (str.isNew() && !str._destroy) || str.markedForDeletion() || !(str.name() == str._nameOr && str.connString() == str._connStringOr && str.provider() == str._providerOr);
+          return !changeDetected; //stops checking (by returning 'false') when first change is detected.
+        });
+        return changeDetected;
+      });
+      me.csAreEncrypted = ko.observable(eval("@ViewBag.connStringsEncrypted".toLowerCase()));
+
+      // Operations -------------------------------------------
+      me.updateInitTbl = ko.observable(false);
+      me.submitConnStringChanges = function () {
+        me.opStatusMsg("... submitting");
+        var fixedConnStrings = $.map(me.connStrings(), function (str) {
+          if (str.markedForDeletion())
+            str._destroy = true;
+          return str;
+        });
+        $.ajax("@Url.Action("SaveConnectionStrings")", {
+          dataType: "json",
+          data: { connStrings: ko.toJSON(fixedConnStrings), updateInitTbl: me.updateInitTbl() },
+          type: "POST",
+          success: function (data) {
+            me.opStatusMsg(data.status);
+            me.refreshConnStringInfo(); //LEARN: the web.config changes can NOT be sent down, from the server, as part of "data". The web.config file is changed, but the app itself needs to be re-invoked for those changes to "be visible" to the app.
+            me.updateInitTbl(false);
+          }
+        });
+      };
+      me.refreshConnStringInfo = function () {
+        me.connStrings([]);
+        $.getJSON("@Url.Action("GetConnStrings")", null, function (strngs) {
+          me.connStrings($.map(strngs, function (str) { return new ConnString(str); }));
+          me.connStringInfoStatus("Connection strings as of: " + new Date());
+        });
+      };
+      me.addConnString = function () {
+        me.connStrings.push(new ConnString({
+          isNew: true,
+          name: me.newConnStringName(),
+          connString: me.newConnString(),
+          provider: me.newConnStringProvider()
+        }));
+        me.newConnStringName("");
+        me.newConnString("");
+      };
+      me.removeConnString = function (cstr) {
+        if (cstr.isNew())
+          me.connStrings.destroy(cstr);
+        else
+          cstr.markedForDeletion(true);
+      }; //LEARN: notice "destroy" allows tracking of deletions, as opposed to a simple "remove" (adds a '_destroy' property to the task instance)
+      me.unDeleteConnString = function (cstr) {
+        cstr.markedForDeletion(false);
+      };
+      me.editConnString = function (cstr) {
+        cstr._name(cstr.name());
+        cstr._connString(cstr.connString());
+        cstr._provider(cstr.provider());
+        cstr.inEditMode(true);
+      };
+      me.editConnStringOk = function (cstr) {
+        cstr.name(cstr._name());
+        cstr.connString(cstr._connString());
+        cstr.provider(cstr._provider());
+        cstr.inEditMode(false);
+        cstr._name("");
+        cstr._connString("");
+        cstr._provider("");
+        cstr.inEditMode(false);
+      };
+      me.editConnStringCancel = function (cstr) {
+        cstr._name("");
+        cstr._connString("");
+        cstr._provider("");
+        cstr.inEditMode(false);
+      };
+    }
+
+    var viewModel = new MaintenanceModel(); //LEARN: makes model accessible from js outside model itself
+    ko.applyBindings(viewModel);
+
+  </script>
+}
+
+@*<!-- Another way to iterate on tables -->
+<div>
+  <table>
+    <tr><th>Test</th></tr>  
+    <!-- ko foreach: connStrings -->
+    <tr><td data-bind="text: name" /></tr>
+    <!-- /ko -->
+  </table>
+</div>*@

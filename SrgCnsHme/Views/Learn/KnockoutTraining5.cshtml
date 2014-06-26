@@ -1,0 +1,115 @@
+﻿@{
+  ViewBag.Title = "Knockout Training 5: Loading and saving data";
+}
+@Styles.Render("~/Content/learning")
+
+<h2>Knockout Training 5: Loading and saving data</h2>
+
+<h4>Tasks</h4>
+<div class="codeRunner shrinkwrap">
+  <form data-bind="submit: addTask">
+    Add task:
+  <input data-bind="value: newTaskText" placeholder="What needs to be done?" />
+    <button class="btn btn-primary" type="submit">Add</button>
+  </form>
+
+  <ul data-bind="foreach: tasks, visible: tasks().length > 0">
+    <li>
+      <input type="checkbox" data-bind="checked: isDone" />
+      <input data-bind="value: title, disable: isDone" />
+      <input type="hidden" data-bind="value: id" />
+      <a href="#" data-bind="click: $parent.removeTask">Delete</a>
+    </li>
+  </ul>
+
+  You have: <b data-bind="text: incompleteTasks().length">&nbsp;</b> incomplete task(s)
+  <span data-bind="visible: incompleteTasks().length == 0">- it's beer time!</span>
+</div>
+
+<form action="@Url.Action("SaveTasksToDb")" method="post">
+  <textarea name="tasks" data-bind="value: ko.toJSON(tasks)"></textarea>
+  <button class="btn btn-primary" type="submit">Save via form post</button>
+</form>
+
+<button class="btn btn-primary" data-bind="click: save">Save via Ajax!</button>
+
+<h5>Status:@TempData["OpStatus"]</h5>
+<h5 id="ajaxSaveStatus"></h5>
+
+@section Scripts {
+  @Scripts.Render("~/jsLearn")
+  <script type="text/javascript">
+
+    function Task(data) {
+      this.title = ko.observable(data.title);
+      this.isDone = ko.observable(data.isDone);
+      this.id = ko.observable(data.id);
+    }
+
+    function TaskListViewModel() {
+      // Data
+      var self = this;
+      self.tasks = ko.observableArray([]);
+      self.newTaskText = ko.observable();
+      self.incompleteTasks = ko.computed(function () {
+        return ko.utils.arrayFilter(self.tasks(), function (task) { return !task.isDone() && !task._destroy; });  //Note: ".isDone" is an observable, so it has to be "invoked": .isDone(). "._destroy" is not observable.
+      });
+
+      // Operations
+      self.addTask = function () {
+        self.tasks.push(new Task({ title: this.newTaskText(), isDone: false, id: -1 }));
+        self.newTaskText("");
+      };
+      self.removeTask = function (task) { self.tasks.destroy(task); }; //LEARN: notice "destroy" allows tracking of deletions, as opposed to a simple "remove" (adds a '_destroy' property to the task instance)
+
+      $.getJSON("@Url.Action("GetTasks")", function (tsks) {
+        var mappedTasks = $.map(tsks, function (item) { return new Task(item); });
+        self.tasks(mappedTasks);
+      });
+
+      //// Load initial state from learn.knockoutjs.com server (as in tutorial), convert it to Task instances, then populate self.tasks
+      //$.get("http://learn.knockoutjs.com/tasks", null, function (allData) {
+      //  var mappedTasks = $.map(resObj(allData), function (item) {
+      //    var itm = new Task(item);
+      //    alert(itm.title() + " : " + itm.isDone());
+      //    return itm; // new Task(item);
+      //  });
+      //  self.tasks(mappedTasks);
+      //});
+
+      ////LEARN: Using test data: either passed down from the server via the ViewBag, or by just declaring it locally here.
+      //var testTaskData = eval('@ViewBag.tasks');
+      //// var testTaskData = [{ title: "first task", isDone: false }, { title: "second task", isDone: true }];
+      //var mappedTasks = $.map(testTaskData, function (item) {
+      //   return new Task(item);
+      //});
+      //self.tasks(mappedTasks);
+
+      //// Load initial state from server, convert it to Task instances, then populate self.tasks  //TODO: does not work! ... find out why jquery.xdomainajax.js fails here.
+      //$.getJSON("http://learn.knockoutjs.com/tasks", function(allData) {
+      //  var html = allData.responseText;
+      //  var info = $(html).filter("p").text();
+      //  var obj = JSON.parse(info);
+      //  var mappedTasks = $.map(obj, function (item) { return new Task(item) });
+      //  self.tasks(mappedTasks);
+      //});
+
+
+
+      self.save = function () {
+        $("#ajaxSaveStatus").text("");
+        $.ajax("@Url.Action("SaveTasksToDbViaAjax")", {
+          dataType: "json",  //NOTE: Don't put contentType = "application/json" //fails with error: "invalid json primitive"
+          //data: {tasks: JSON.stringify(tstData)}, //LEARN: .ajax without ko
+          data: { tasks: ko.toJSON(self.tasks) }, //LEARN: .ajax with ko
+          type: "POST",
+          success: function (result) { $("#ajaxSaveStatus").text(result); }
+        });
+
+        // ko.utils.postJson("@Url.Action("SaveTasksToDbViaAjax")", { tasks: eval(ko.toJSON(self.tasks)) }); //LEARN: another way using ko. Note ko.postJson needs: { tasks: <javascript array object> }
+      };
+    }
+
+    ko.applyBindings(new TaskListViewModel());
+  </script>
+}

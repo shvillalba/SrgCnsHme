@@ -1,0 +1,53 @@
+﻿@{
+  ViewBag.Title = "About";
+}
+
+<hgroup class="title">
+  <h1>@ViewBag.Title.</h1>
+  <h2>@ViewBag.Message</h2>
+</hgroup>
+
+<article>
+  <p>
+    Sergio's "play" website: used to help teach/illustrate
+    web-development techniques to the team.
+  </p>
+
+  <p>
+    Note: access to some pages & operations
+    is restricted.
+  </p>
+
+  <p>
+    Note, also, that the performance of the
+    code has not been optimized for speed. An
+    effort has been placed instead in exercising
+    a variety of features of 
+      <ol>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>Ajax</li>
+        <li>JavaScript</li>
+        <li>Bootstrap</li>
+        <li>JQuery</li>
+        <li>Knockout.js</li>
+        <li>... etc</li>
+
+      </ol>
+  </p>
+</article>
+
+<aside>
+  <h3>Thought of the day ... well, every day:</h3>
+  <p>
+    Life is code ... code is life.
+  </p>
+  <ul>
+    <li>@Html.ActionLink("Home", "Index", "Home")
+    </li>
+    <li>@Html.ActionLink("About", "About", "Home")
+    </li>
+    <li>@Html.ActionLink("Contact", "Contact", "Home")
+    </li>
+  </ul>
+</aside>

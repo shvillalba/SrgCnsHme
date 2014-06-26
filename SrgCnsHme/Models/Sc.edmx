@@ -1,0 +1,352 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ScModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="ScModelStoreContainer">
+          <EntitySet Name="BloodPressure" EntityType="ScModel.Store.BloodPressure" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="GM_script_info" EntityType="ScModel.Store.GM_script_info" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="GM_shvdbgState" EntityType="ScModel.Store.GM_shvdbgState" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="LafollettePressInfo" EntityType="ScModel.Store.LafollettePressInfo" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Persons" EntityType="ScModel.Store.Persons" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="SpeedDialSites" EntityType="ScModel.Store.SpeedDialSites" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Weights" EntityType="ScModel.Store.Weights" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_BloodPressure_PersonID" Association="ScModel.Store.FK_BloodPressure_PersonID">
+            <End Role="Persons" EntitySet="Persons" />
+            <End Role="BloodPressure" EntitySet="BloodPressure" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Weights_PersonID" Association="ScModel.Store.FK_Weights_PersonID">
+            <End Role="Persons" EntitySet="Persons" />
+            <End Role="Weights" EntitySet="Weights" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="BloodPressure">
+          <Key>
+            <PropertyRef Name="BpID" />
+          </Key>
+          <Property Name="BpID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="PersonID" Type="int" Nullable="false" />
+          <Property Name="BpSystolic" Type="smallint" Nullable="false" />
+          <Property Name="BpDiastolic" Type="smallint" Nullable="false" />
+          <Property Name="BpPulse" Type="smallint" />
+          <Property Name="BpDateTime" Type="smalldatetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GM_script_info">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="user" Type="nvarchar" MaxLength="50" />
+          <Property Name="script" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="url" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="info" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="date" Type="smalldatetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GM_shvdbgState">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="pageTitle" Type="nvarchar" MaxLength="100" />
+          <Property Name="url" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="lastQuery" Type="nvarchar(max)" />
+          <Property Name="inDbgMode" Type="bit" Nullable="false" />
+          <Property Name="top" Type="smallint" />
+          <Property Name="left" Type="smallint" />
+          <Property Name="width" Type="smallint" />
+          <Property Name="height" Type="smallint" />
+          <Property Name="time" Type="time" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LafollettePressInfo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="documentId" Type="nvarchar" MaxLength="50" />
+          <Property Name="documentDate" Type="date" />
+        </EntityType>
+        <EntityType Name="Persons">
+          <Key>
+            <PropertyRef Name="PersonID" />
+          </Key>
+          <Property Name="PersonID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShortName" Type="nvarchar" Nullable="false" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="SpeedDialSites">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" />
+          <Property Name="url" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="iconurl" Type="nvarchar(max)" />
+          <Property Name="order" Type="nvarchar" Nullable="false" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Weights">
+          <Key>
+            <PropertyRef Name="WeightID" />
+          </Key>
+          <Property Name="WeightID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="PersonID" Type="int" Nullable="false" />
+          <Property Name="Weight" Type="real" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_BloodPressure_PersonID">
+          <End Role="Persons" Type="ScModel.Store.Persons" Multiplicity="1" />
+          <End Role="BloodPressure" Type="ScModel.Store.BloodPressure" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Persons">
+              <PropertyRef Name="PersonID" />
+            </Principal>
+            <Dependent Role="BloodPressure">
+              <PropertyRef Name="PersonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Weights_PersonID">
+          <End Role="Persons" Type="ScModel.Store.Persons" Multiplicity="1" />
+          <End Role="Weights" Type="ScModel.Store.Weights" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Persons">
+              <PropertyRef Name="PersonID" />
+            </Principal>
+            <Dependent Role="Weights">
+              <PropertyRef Name="PersonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ScModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="scContext" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="BloodPressures" EntityType="ScModel.BloodPressure" />
+          <EntitySet Name="GM_script_info" EntityType="ScModel.GM_script_info" />
+          <EntitySet Name="GM_shvdbgState" EntityType="ScModel.GM_shvdbgState" />
+          <EntitySet Name="LafollettePressInfoes" EntityType="ScModel.LafollettePressInfo" />
+          <EntitySet Name="SpeedDialSites" EntityType="ScModel.SpeedDialSite" />
+          <EntitySet Name="Weights" EntityType="ScModel.Weight" />
+          <EntitySet Name="Persons" EntityType="ScModel.Person" />
+          <AssociationSet Name="FK_BloodPressure_PersonID" Association="ScModel.FK_BloodPressure_PersonID">
+            <End Role="Person" EntitySet="Persons" />
+            <End Role="BloodPressure" EntitySet="BloodPressures" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Weights_PersonID" Association="ScModel.FK_Weights_PersonID">
+            <End Role="Person" EntitySet="Persons" />
+            <End Role="Weight" EntitySet="Weights" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="BloodPressure">
+          <Key>
+            <PropertyRef Name="BpID" />
+          </Key>
+          <Property Name="BpID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="PersonID" Type="Int32" Nullable="false" />
+          <Property Name="BpSystolic" Type="Int16" Nullable="false" />
+          <Property Name="BpDiastolic" Type="Int16" Nullable="false" />
+          <Property Name="BpPulse" Type="Int16" />
+          <Property Name="BpDateTime" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Person" Relationship="ScModel.FK_BloodPressure_PersonID" FromRole="BloodPressure" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="GM_script_info">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="user" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="script" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="url" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="info" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <EntityType Name="GM_shvdbgState">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="pageTitle" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="url" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="lastQuery" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="inDbgMode" Type="Boolean" Nullable="false" />
+          <Property Name="top" Type="Int16" />
+          <Property Name="left" Type="Int16" />
+          <Property Name="width" Type="Int16" />
+          <Property Name="height" Type="Int16" />
+          <Property Name="time" Type="Time" Nullable="false" Precision="7" />
+        </EntityType>
+        <EntityType Name="LafollettePressInfo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="documentId" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="documentDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="SpeedDialSite">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="url" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="iconurl" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="order" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Weight">
+          <Key>
+            <PropertyRef Name="WeightID" />
+          </Key>
+          <Property Name="WeightID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="PersonID" Type="Int32" Nullable="false" />
+          <Property Name="WeightInLb" Type="Single" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Person" Relationship="ScModel.FK_Weights_PersonID" FromRole="Weight" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="PersonID" />
+          </Key>
+          <Property Type="Int32" Name="PersonID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="FirstName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="LastName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ShortName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BloodPressures" Relationship="ScModel.FK_BloodPressure_PersonID" FromRole="Person" ToRole="BloodPressure" />
+          <NavigationProperty Name="Weights" Relationship="ScModel.FK_Weights_PersonID" FromRole="Person" ToRole="Weight" />
+        </EntityType>
+        <Association Name="FK_BloodPressure_PersonID">
+          <End Type="ScModel.Person" Role="Person" Multiplicity="1" />
+          <End Type="ScModel.BloodPressure" Role="BloodPressure" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="PersonID" />
+            </Principal>
+            <Dependent Role="BloodPressure">
+              <PropertyRef Name="PersonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Weights_PersonID">
+          <End Type="ScModel.Person" Role="Person" Multiplicity="1" />
+          <End Type="ScModel.Weight" Role="Weight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="PersonID" />
+            </Principal>
+            <Dependent Role="Weight">
+              <PropertyRef Name="PersonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ScModelStoreContainer" CdmEntityContainer="scContext">
+          <EntitySetMapping Name="BloodPressures">
+            <EntityTypeMapping TypeName="ScModel.BloodPressure">
+              <MappingFragment StoreEntitySet="BloodPressure">
+                <ScalarProperty Name="BpID" ColumnName="BpID" />
+                <ScalarProperty Name="PersonID" ColumnName="PersonID" />
+                <ScalarProperty Name="BpSystolic" ColumnName="BpSystolic" />
+                <ScalarProperty Name="BpDiastolic" ColumnName="BpDiastolic" />
+                <ScalarProperty Name="BpPulse" ColumnName="BpPulse" />
+                <ScalarProperty Name="BpDateTime" ColumnName="BpDateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GM_script_info">
+            <EntityTypeMapping TypeName="ScModel.GM_script_info">
+              <MappingFragment StoreEntitySet="GM_script_info">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="user" ColumnName="user" />
+                <ScalarProperty Name="script" ColumnName="script" />
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="info" ColumnName="info" />
+                <ScalarProperty Name="date" ColumnName="date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GM_shvdbgState">
+            <EntityTypeMapping TypeName="ScModel.GM_shvdbgState">
+              <MappingFragment StoreEntitySet="GM_shvdbgState">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="pageTitle" ColumnName="pageTitle" />
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="lastQuery" ColumnName="lastQuery" />
+                <ScalarProperty Name="inDbgMode" ColumnName="inDbgMode" />
+                <ScalarProperty Name="top" ColumnName="top" />
+                <ScalarProperty Name="left" ColumnName="left" />
+                <ScalarProperty Name="width" ColumnName="width" />
+                <ScalarProperty Name="height" ColumnName="height" />
+                <ScalarProperty Name="time" ColumnName="time" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LafollettePressInfoes">
+            <EntityTypeMapping TypeName="ScModel.LafollettePressInfo">
+              <MappingFragment StoreEntitySet="LafollettePressInfo">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="documentId" ColumnName="documentId" />
+                <ScalarProperty Name="documentDate" ColumnName="documentDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SpeedDialSites">
+            <EntityTypeMapping TypeName="ScModel.SpeedDialSite">
+              <MappingFragment StoreEntitySet="SpeedDialSites">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="iconurl" ColumnName="iconurl" />
+                <ScalarProperty Name="order" ColumnName="order" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Weights">
+            <EntityTypeMapping TypeName="ScModel.Weight">
+              <MappingFragment StoreEntitySet="Weights">
+                <ScalarProperty Name="WeightID" ColumnName="WeightID" />
+                <ScalarProperty Name="PersonID" ColumnName="PersonID" />
+                <ScalarProperty Name="WeightInLb" ColumnName="Weight" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Persons">
+            <EntityTypeMapping TypeName="ScModel.Person">
+              <MappingFragment StoreEntitySet="Persons">
+                <ScalarProperty Name="ShortName" ColumnName="ShortName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="PersonID" ColumnName="PersonID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
