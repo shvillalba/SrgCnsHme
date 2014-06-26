@@ -7,7 +7,7 @@ namespace SrgCnsHme.Controllers
   {
     public ActionResult Index()
     {
-      ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
+      ViewBag.Message = "Note: this is only a test and demo site.";
 
       return View();
     }
